@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>C3: High-performance and low-complexity neural compression from a single image or video</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="slider.css">
+    <script>
+      function showResults(dataset) {
+        var results = document.getElementsByClassName("results");
+
+        for (i = 0; i < results.length; i++) {
+          results[i].style.display = "none";
+        }
+
+        document.getElementById(dataset).style.display = "block";
+      }
+
+      function adjustSlider(obj)
+      {
+        var e = window.event;
+        var rect = e.target.getBoundingClientRect();
+        var pos = e.clientX - rect.left;
+        var posStr = pos.toString()
+
+        var list = obj.getElementsByClassName('slider');
+        for (var i = 0; i < list.length; i++) {
+          list[i].style.width = posStr.concat("px");
+        }
+
+        var list = obj.getElementsByTagName('img');
+        list[1].style.clipPath = "rect(0 ".concat(posStr).concat("px auto 0)");
+      }
+    </script>
+  </head>
+  <body>
+    <header class="mt-4">
+      <h2>C3: High-performance and low-complexity neural<br>compression from a single image or video</h2>
+      <p class="lead">
+        <a href="https://hyunjik11.github.io">Hyunjik Kim</a>*,
+        <a href="">Matthias Bauer</a>*,
+        <a href="http://theis.io">Lucas Theis</a>,
+        <a href="https://jonathan-schwarz.github.io">Jonathan R. Schwarz</a>,
+        <a href="https://emiliendupont.github.io">Emilien Dupont</a>*
+      </p>
+      <p class="lead">Google DeepMind</p>
+      <p class="lead text-secondary">CVPR 2024</p>
+      <p>
+        <span class="mx-2"><i class="fa-regular fa-file"></i> <a href="https://arxiv.org/abs/2312.02753">Paper</a></span>
+        <span class="mx-2"><i class="fa-brands fa-github"></i> <a href="">Code</a></span>
+        <span class="mx-2"><i class="fa-solid fa-download"></i> <a href="#files">Files</a></span>
+        <span class="mx-2"><i class="fa-solid fa-at"></i> <a href="#bibtex">Citation</a></span>
+      </p>
+    </header>
+
+    <main class="container mt-5">
+      <div class="row">
+        <div class="col-8 mx-auto text-center">
+          <div class="btn-group btn-group-sm mb-2">
+            <div class="btn btn-outline-dark btn-group-text">Dataset:</div>
+            <input class="btn-check" name="select_dataset" id="select_kodak" type="radio" onclick="showResults('kodak')" checked>
+            <label class="btn btn-outline-dark" for="select_kodak">Kodak</label>
+            <input class="btn-check" name="select_dataset" id="select_clic" type="radio" onclick="showResults('clic')">
+            <label class="btn btn-outline-dark" for="select_clic">CLIC</label>
+            <input class="btn-check" name="select_dataset" id="select_uvg" type="radio" onclick="showResults('uvg')">
+            <label class="btn btn-outline-dark" for="select_uvg">UVG</label>
+          </div>
+          <div class="results" id="kodak">
+            <img class="img-fluid mx-1" width="390" src="figures/rd_kodak.png">
+            <img class="img-fluid mx-1" width="404" src="figures/macs_bd_rate_kodak.png">
+          </div>
+          <div class="results" id="clic" style="display:none;">
+            <img class="img-fluid mx-1" width="390" src="figures/rd_clic.png">
+            <img class="img-fluid mx-1" width="404" src="figures/macs_bd_rate_clic.png">
+          </div>
+          <div class="results" id="uvg" style="display:none;">
+            <img class="img-fluid mx-1" width="390" src="figures/rd_uvg.png">
+            <img class="img-fluid mx-1" width="404" src="figures/macs_bd_rate_uvg.png">
+          </div>
+          <p class="text-secondary mt-2 px-4">Rate-distortion and computational complexity results. C3
+          is the first low-complexity neural codec competitive with VTM.</p>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-8 mx-auto">
+          <h4>Abstract</h4>
+          <p class="text-justify">Most neural compression models are trained
+          on large datasets of images or videos in order to generalize to
+          unseen data. Such generalization typically requires large and
+          expressive architectures with a high decoding complexity. Here we
+          introduce C3, a neural compression method with strong
+          rate-distortion (RD) performance that instead overfits a small model
+          to each image or video separately. The resulting decoding
+          complexity of C3 can be an order of magnitude lower than neural
+          baselines with similar RD performance. C3 builds on COOL-CHIC
+          (<a href="https://arxiv.org/abs/2212.05458">Ladune et al., 2023</a>)
+          and makes several simple and effective
+          improvements for images. We further develop new methodology to apply
+          C3 to videos. On the CLIC2020 image benchmark, we match the RD
+          performance of VTM, the reference implementation of the H.266 codec,
+          with less than 3k MACs/pixel for decoding. On the UVG video
+          benchmark, we match the RD performance of the Video Compression
+          Transformer (<a href="https://arxiv.org/abs/2006.09965">Mentzer et
+            al., 2022</a>), a well-established neural video
+          codec, with less than 5k MACs/pixel for decoding.</p>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-8 mx-auto">
+          <h5 id="method">Method</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 mx-auto text-center text-secondary">
+          <img class="img-fluid" src="figures/method.png">
+          <p>Visualization of the image decoding process.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 mx-auto">
+          <p>Following earlier work, the decoder receives compressed latents at multiple resolutions and
+           parameters of a small entropy model as well as parameters of a
+           synthesis network. After decoding latents with the entropy model, the latents are upsampled to the image resolution
+          and passed through the synthesis network. Importantly, the synthesis
+          network, the entropy model, and the latents are optimized on a per-image basis by the encoder.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4 mx-auto text-center text-secondary">
+          <img class="img-fluid" src="figures/soft_round.png">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 mx-auto text-center text-secondary">
+          <p>An illustration of uniform noise (left) and soft-rounding plus
+          non-uniform noise (right). Shown are the mean and 95% confidence
+          intervals.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8 mx-auto">
+          <p>We significantly improve the performance of this approach through better approximations
+          of quantization, different activation functions, and other improvements. In particular,
+          we find that soft-rounding dither is crucial for good performance and
+          that non-uniform quantization noise works better than the uniform noise
+          typically used to approximate quantization.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-8 mx-auto">
+          <!-- C3: 0.3097 / 30.28 -->
+          <!-- CC: 0.3150 / 28.98 -->
+          <!-- JP: 0.3097 / 17.42 -->
+          <div class="juxtapose" onmousemove="adjustSlider(this)">
+            <img src="figures/jpeg444.jpg">
+            <img src="figures/c3_mid.png">
+            <div class="labels">
+              <div>
+                <b>C3</b><br>
+                0.3097 bpp<br>
+                30.28 dB
+              </div>
+              <div>
+                <b>JPEG</b><br>
+                0.3097 bpp<br>
+                17.42 dB
+              </div>
+            </div>
+            <div class="slider"></div>
+          </div>
+          <p class="text-center text-secondary">An example image reconstruction compared to JPEG (4:4:4).</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-8 mx-auto">
+          <p class="text-justify">We further extended the approach to videos.
+          This is achieved by using 3D (instead of 2D) latents and a novel
+          context selection strategy which enables efficient entropy coding in
+          the presence of fast motion. Larger videos are divided into patches of up to
+          75 frames and 270x320 pixels, and each patch is compressed independently.</p>
+
+          <video class="w-100" autoplay loop playsinline muted controls>
+            <source src="figures/video_reconstruction.mp4" type="video/mp4"></source>
+          </video>
+          <p class="text-center text-secondary">Reconstruction of a video from the UVG dataset (Bosphorus @ 0.05 bpp).</p>
+
+          <video class="w-100 mt-1" autoplay loop playsinline muted controls>
+            <source src="figures/video_latents.mp4" type="video/mp4"></source>
+          </video>
+          <p class="text-center text-secondary">Visualization of latents corresponding to the video above.</p>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-8 mx-auto">
+          <div class="col">
+            <h5 id="files">Files</h5>
+            <p class="text-justify">Example reconstructions and raw quantitative results used in our figures can be downloaded below.</p>
+            <ul>
+              <li>
+                <a href="files/raw_numbers.zip"><i class="fa-regular fa-file"></i> <b>Quantitative results</b></a><br>
+                <span class="text-secondary">.zip, 5 KB</span>
+              </li>
+              <li>
+                <a href=""><i class="fa-regular fa-file"></i> <b>Kodak reconstructions</b></a><br>
+                <span class="text-secondary">.zip, 160 MB</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-8 mx-auto">
+          <div class="col">
+            <h5 id="bibtex">Citation</h5>
+            <pre>@misc{kim2023c3,
+  title={C3: High-performance and low-complexity neural compression from a single image or video},
+  author={Hyunjik Kim and Matthias Bauer and Lucas Theis and Jonathan Richard Schwarz and Emilien Dupont},
+  year={2023},
+  eprint={2312.02753},
+  archivePrefix={arXiv},
+  primaryClass={eess.IV}
+}</pre>
+            </pre>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="container">
+      <div class="row my-4">
+        <div class="col-8 mx-auto">
+          <p><small>* Equal contribution</small></p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/690e5f0a02.js" crossorigin="anonymous"></script>
+  </body>
+</html>
