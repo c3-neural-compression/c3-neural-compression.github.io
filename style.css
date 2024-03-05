@@ -1,0 +1,36 @@
+header {
+  text-align: center;
+}
+
+div {
+}
+
+.btn-group-text {
+  cursor: text;
+}
+
+.btn-group-text:hover {
+  background-color: white;
+  color: #212529;
+}
+
+.btn-group-text:active:hover {
+  background-color: white;
+  color: #212529;
+}
+
+a {
+  text-decoration: none;
+}
+
+a i {
+  color: black;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  padding: 5px 0px;
+}
